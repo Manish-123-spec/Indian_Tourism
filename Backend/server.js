@@ -122,18 +122,18 @@ const verifyToken = (req, res, next) => {
 /* RECOMMEND API */
 /////////////////////////////////////////////////////
 
-
 app.post("/recommend", verifyToken, (req, res) => {
   const { temp, humidity, category } = req.body;
 
-  if (!temp || !humidity || !category) {
+  // ✅ better validation
+  if (temp == null || humidity == null || !category) {
     return res.status(400).json({ error: "Missing input" });
   }
 
   const py = spawn("node", [
     "predict.js",
-    temp,
-    humidity,
+    String(temp),
+    String(humidity),
     category,
   ]);
 
@@ -144,22 +144,22 @@ app.post("/recommend", verifyToken, (req, res) => {
   });
 
   py.stderr.on("data", err => {
-    console.error("JS ERROR:", err.toString());
+    console.error("SCRIPT ERROR:", err.toString());
   });
 
   py.on("close", () => {
     try {
-      if (!data) {
+      if (!data || data.trim() === "") {
         return res.status(500).json({ error: "No output from script" });
       }
 
-      const jsonOutput = JSON.parse(data);
-      res.json(jsonOutput);
+      const jsonOutput = JSON.parse(data.trim());
+      return res.json(jsonOutput);
 
     } catch (err) {
       console.error("RAW OUTPUT:", data);
-      res.status(500).json({
-        message: "Parse error",
+      return res.status(500).json({
+        message: "Invalid JSON output",
         raw: data,
       });
     }
