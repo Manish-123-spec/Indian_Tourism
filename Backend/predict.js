@@ -1,19 +1,19 @@
-const fs = require("fs");
-const path = require("path");
+import fs from "fs";
+import path from "path";
 
 // ================= INPUT =================
 const temp = parseFloat(process.argv[2]);
 const humidity = parseFloat(process.argv[3]);
 const categoryInput = (process.argv[4] || "").trim().toLowerCase();
 
-// ================= SAFE CHECK =================
+// ================= VALIDATION =================
 if (isNaN(temp) || isNaN(humidity) || !categoryInput) {
   console.log(JSON.stringify({ error: "Invalid input" }));
   process.exit(0);
 }
 
-// ================= LOAD DATA (FIX IMPORTANT) =================
-const filePath = path.join(__dirname, "tourist_places.json");
+// ================= LOAD DATA =================
+const filePath = path.join(process.cwd(), "tourist_places.json");
 const df = JSON.parse(fs.readFileSync(filePath, "utf-8"));
 
 // ================= CATEGORY MAP =================
@@ -46,7 +46,6 @@ filtered = filtered.map(item => ({
     Math.pow(item.avg_humidity - humidity, 2),
 }));
 
-// ================= SORT =================
 filtered.sort((a, b) => a.score - b.score);
 
 // ================= OUTPUT =================
