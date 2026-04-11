@@ -6,7 +6,6 @@ const temp = parseFloat(process.argv[2]);
 const humidity = parseFloat(process.argv[3]);
 const categoryInput = (process.argv[4] || "").trim().toLowerCase();
 
-// ================= VALIDATION =================
 if (isNaN(temp) || isNaN(humidity) || !categoryInput) {
   console.log(JSON.stringify({ error: "Invalid input" }));
   process.exit(0);
@@ -30,21 +29,32 @@ const categoryMap = {
 
 const category = categoryMap[categoryInput] || "Beach";
 
-// ================= FILTER CATEGORY =================
-const categoryPlaces = df.filter(
-  item => item.category === category
-);
+// ================= STEP 1: FILTER CATEGORY =================
+let filtered = df.filter(item => item.category === category);
 
-// ================= SCORE FUNCTION =================
-function getScore(item) {
-  const tempDiff = Math.abs(item.avg_temp - temp) / 50;
-  const humidityDiff = Math.abs(item.avg_humidity - humidity) / 100;
+// ================= STEP 2: HARD WEATHER FILTER =================
+filtered = filtered.filter(item => {
+  const tempDiff = Math.abs(item.avg_temp - temp);
+  const humidityDiff = Math.abs(item.avg_humidity - humidity);
 
-  return (tempDiff * 0.6) + (humidityDiff * 0.4);
+  return tempDiff <= 15 && humidityDiff <= 25;
+});
+
+// If nothing left → relax filter slightly
+if (filtered.length === 0) {
+  filtered = df.filter(item => item.category === category);
 }
 
-// ================= APPLY SCORING =================
-const scored = categoryPlaces.map(item => ({
+// ================= STEP 3: SCORING =================
+function score(item) {
+  const tempDiff = Math.abs(item.avg_temp - temp);
+  const humidityDiff = Math.abs(item.avg_humidity - humidity);
+
+  return tempDiff * 0.6 + humidityDiff * 0.4;
+}
+
+// ================= APPLY SCORE =================
+const result = filtered.map(item => ({
   city: item.city,
   state: item.state,
   category: item.category,
@@ -52,14 +62,11 @@ const scored = categoryPlaces.map(item => ({
   avg_humidity: item.avg_humidity,
   latitude: item.latitude,
   longitude: item.longitude,
-  score: getScore(item),
+  score: score(item)
 }));
 
 // ================= SORT =================
-scored.sort((a, b) => a.score - b.score);
+result.sort((a, b) => a.score - b.score);
 
-// ================= TOP RESULTS =================
-const topPlaces = scored.slice(0, 5);
-
-// ================= OUTPUT =================
-console.log(JSON.stringify(topPlaces));
+// ================= TOP 5 =================
+console.log(JSON.stringify(result.slice(0, 5)));
