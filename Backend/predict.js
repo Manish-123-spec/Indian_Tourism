@@ -30,53 +30,36 @@ const categoryMap = {
 
 const category = categoryMap[categoryInput] || "Beach";
 
-// ================= FILTER =================
-let filtered = df.filter(item => item.category === category);
+// ================= FILTER CATEGORY =================
+const categoryPlaces = df.filter(
+  item => item.category === category
+);
 
-if (filtered.length === 0) {
-  console.log(JSON.stringify([]));
-  process.exit(0);
-}
-
-// ================= SCORING ENGINE =================
-filtered = filtered.map(item => {
-  // normalize differences
+// ================= SCORE FUNCTION =================
+function getScore(item) {
   const tempDiff = Math.abs(item.avg_temp - temp) / 50;
   const humidityDiff = Math.abs(item.avg_humidity - humidity) / 100;
 
-  // category penalty
-  const categoryPenalty = item.category === category ? 0 : 1;
+  return (tempDiff * 0.6) + (humidityDiff * 0.4);
+}
 
-  // weather boost (smart logic)
-  let weatherBoost = 0;
-
-  if (temp > 35 && item.category === "Beach") weatherBoost = -0.3;
-  if (temp < 15 && item.category === "Hill Station") weatherBoost = -0.3;
-
-  // FINAL SCORE
-  const score =
-    (tempDiff * 0.5) +
-    (humidityDiff * 0.3) +
-    (categoryPenalty * 0.2) +
-    weatherBoost;
-
-  return {
-    city: item.city,
-    state: item.state,
-    category: item.category,
-    avg_temp: item.avg_temp,
-    avg_humidity: item.avg_humidity,
-    latitude: item.latitude,
-    longitude: item.longitude,
-    score
-  };
-});
+// ================= APPLY SCORING =================
+const scored = categoryPlaces.map(item => ({
+  city: item.city,
+  state: item.state,
+  category: item.category,
+  avg_temp: item.avg_temp,
+  avg_humidity: item.avg_humidity,
+  latitude: item.latitude,
+  longitude: item.longitude,
+  score: getScore(item),
+}));
 
 // ================= SORT =================
-filtered.sort((a, b) => a.score - b.score);
+scored.sort((a, b) => a.score - b.score);
 
 // ================= TOP RESULTS =================
-const topPlaces = filtered.slice(0, 5);
+const topPlaces = scored.slice(0, 5);
 
 // ================= OUTPUT =================
 console.log(JSON.stringify(topPlaces));
