@@ -1,7 +1,6 @@
 {
   "name": "tourism-backend",
   "version": "1.0.0",
-  "type": "module",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
@@ -15,6 +14,6 @@
     "jsonwebtoken": "^9.0.3",
     "jwt-decode": "^4.0.0",
     "mongoose": "^7.5.0",
-    "node-fetch": "^3.3.2",
+    "node-fetch": "^3.3.2"
   }
 }
