@@ -30,7 +30,7 @@ const categoryMap = {
 
 const category = categoryMap[categoryInput] || "Beach";
 
-// ================= FILTER =================
+// ================= FILTER DATA =================
 let filtered = df.filter(item => item.category === category);
 
 if (filtered.length === 0) {
@@ -38,25 +38,33 @@ if (filtered.length === 0) {
   process.exit(0);
 }
 
-// ================= SCORE =================
-filtered = filtered.map(item => ({
-  ...item,
-  score:
-    Math.pow(item.avg_temp - temp, 2) +
-    Math.pow(item.avg_humidity - humidity, 2),
-}));
+// ================= SCORING (SMART FORMULA) =================
+filtered = filtered.map(item => {
+  const tempDiff = Math.abs(item.avg_temp - temp);
+  const humidityDiff = Math.abs(item.avg_humidity - humidity);
 
+  // 🔥 Weighted scoring system
+  const score =
+    (tempDiff * 0.6) +
+    (humidityDiff * 0.4);
+
+  return {
+    city: item.city,
+    state: item.state,
+    category: item.category,
+    avg_temp: item.avg_temp,
+    avg_humidity: item.avg_humidity,
+    latitude: item.latitude,
+    longitude: item.longitude,
+    score
+  };
+});
+
+// ================= SORT =================
 filtered.sort((a, b) => a.score - b.score);
 
-// ================= OUTPUT =================
-const result = filtered.slice(0, 5).map(item => ({
-  city: item.city,
-  state: item.state,
-  category: item.category,
-  avg_temp: item.avg_temp,
-  avg_humidity: item.avg_humidity,
-  latitude: item.latitude,
-  longitude: item.longitude,
-}));
+// ================= TOP 5 =================
+const topPlaces = filtered.slice(0, 5);
 
-console.log(JSON.stringify(result));
+// ================= OUTPUT =================
+console.log(JSON.stringify(topPlaces));
