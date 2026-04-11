@@ -2,7 +2,6 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
-import { spawn } from "child_process";
 import jwt from "jsonwebtoken";
 import fetch from "node-fetch";
 
