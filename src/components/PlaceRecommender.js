@@ -35,7 +35,7 @@ const PlaceRecommender = () => {
   // 🔥 SAVE PREFERENCE
   const savePreference = async (selectedCategory) => {
   try {
-    await axios.post("http://localhost:5000/savePreference", {
+    await axios.post("https://indian-tourism-1-go4d.onrender.com/savePreference", {
       userId,
       category: selectedCategory,
       time: Date.now() // 🔥 add this

@@ -10,7 +10,7 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const res = await axios.post("http://localhost:5000/login", {
+      const res = await axios.post("https://indian-tourism-1-go4d.onrender.com/login", {
         username,
         password
       });

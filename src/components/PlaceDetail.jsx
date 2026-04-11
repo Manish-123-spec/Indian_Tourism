@@ -28,7 +28,7 @@ const PlaceDetail = () => {
         if (!userId) return;
 
         const res = await axios.get(
-          `http://localhost:5000/getPreference/${userId}`,
+          `https://indian-tourism-1-go4d.onrender.com/getPreference/${userId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`

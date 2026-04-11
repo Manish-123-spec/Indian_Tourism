@@ -19,7 +19,7 @@ app.use(express.json());
 /* MongoDB Connection */
 /////////////////////////////////////////////////////
 
-mongoose.connect("mongodb://127.0.0.1:27017/tourismDB")
+mongoose.connect("mongodb+srv://sharmamanishsharmaabc49_db_user:xkDjZ7KIjUQrLfmK@cluster0.xixatky.mongodb.net/?appName=Cluster0")
   .then(() => console.log("MongoDB Connected"))
   .catch(err => console.log("MongoDB Error:", err));
 
@@ -150,7 +150,7 @@ app.post("/recommend", verifyToken, (req, res) => {
 // save preference
 const savePreference = async (selectedCategory) => {
   try {
-    await axios.post("http://localhost:5000/savePreference", {
+    await axios.post("https://indian-tourism-1-go4d.onrender.com/savePreference", {
       userId,
       category: selectedCategory,
       time: Date.now() // 🔥 add this
@@ -226,6 +226,8 @@ app.get("/hotels", (req, res) => {
 /* START SERVER */
 /////////////////////////////////////////////////////
 
-app.listen(5000, () => {
-  console.log("🚀 Server running on port 5000"); 
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
 });
