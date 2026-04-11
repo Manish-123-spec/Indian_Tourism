@@ -1,12 +1,20 @@
 const fs = require("fs");
+const path = require("path");
 
 // ================= INPUT =================
 const temp = parseFloat(process.argv[2]);
 const humidity = parseFloat(process.argv[3]);
-const categoryInput = process.argv[4].trim().toLowerCase();
+const categoryInput = (process.argv[4] || "").trim().toLowerCase();
 
-// ================= LOAD DATA =================
-const df = JSON.parse(fs.readFileSync("tourist_places.json", "utf-8"));
+// ================= SAFE CHECK =================
+if (isNaN(temp) || isNaN(humidity) || !categoryInput) {
+  console.log(JSON.stringify({ error: "Invalid input" }));
+  process.exit(0);
+}
+
+// ================= LOAD DATA (FIX IMPORTANT) =================
+const filePath = path.join(__dirname, "tourist_places.json");
+const df = JSON.parse(fs.readFileSync(filePath, "utf-8"));
 
 // ================= CATEGORY MAP =================
 const categoryMap = {
@@ -20,7 +28,6 @@ const categoryMap = {
   adventure: "Adventure",
 };
 
-// normalize category
 const category = categoryMap[categoryInput] || "Beach";
 
 // ================= FILTER =================
@@ -31,22 +38,19 @@ if (filtered.length === 0) {
   process.exit(0);
 }
 
-// ================= SCORE CALCULATION =================
-filtered = filtered.map(item => {
-  const score =
+// ================= SCORE =================
+filtered = filtered.map(item => ({
+  ...item,
+  score:
     Math.pow(item.avg_temp - temp, 2) +
-    Math.pow(item.avg_humidity - humidity, 2);
+    Math.pow(item.avg_humidity - humidity, 2),
+}));
 
-  return { ...item, score };
-});
-
-// ================= SORT + TOP 5 =================
+// ================= SORT =================
 filtered.sort((a, b) => a.score - b.score);
 
-const topPlaces = filtered.slice(0, 5);
-
 // ================= OUTPUT =================
-const result = topPlaces.map(item => ({
+const result = filtered.slice(0, 5).map(item => ({
   city: item.city,
   state: item.state,
   category: item.category,

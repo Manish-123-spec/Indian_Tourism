@@ -125,37 +125,46 @@ const verifyToken = (req, res, next) => {
 const { spawn } = require("child_process");
 
 app.post("/recommend", verifyToken, (req, res) => {
-  try {
-    const { temp, humidity, category } = req.body;
+  const { temp, humidity, category } = req.body;
 
-    // run JS script using node
-    const py = spawn("node", ["predict.js", temp, humidity, category]);
-
-    let data = "";
-
-    py.stdout.on("data", (chunk) => {
-      data += chunk.toString();
-    });
-
-    py.stderr.on("data", (err) => {
-      console.error("JS error:", err.toString());
-    });
-
-    py.on("close", (code) => {
-      try {
-        const jsonOutput = JSON.parse(data.trim()); // direct parse
-        res.json(jsonOutput);
-      } catch (error) {
-        console.error("Parse error:", error.message);
-        res.status(500).json({
-          message: "Failed to parse JS output",
-          raw: data,
-        });
-      }
-    });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+  if (!temp || !humidity || !category) {
+    return res.status(400).json({ error: "Missing input" });
   }
+
+  const py = spawn("node", [
+    "predict.js",
+    temp,
+    humidity,
+    category,
+  ]);
+
+  let data = "";
+
+  py.stdout.on("data", chunk => {
+    data += chunk.toString();
+  });
+
+  py.stderr.on("data", err => {
+    console.error("JS ERROR:", err.toString());
+  });
+
+  py.on("close", () => {
+    try {
+      if (!data) {
+        return res.status(500).json({ error: "No output from script" });
+      }
+
+      const jsonOutput = JSON.parse(data);
+      res.json(jsonOutput);
+
+    } catch (err) {
+      console.error("RAW OUTPUT:", data);
+      res.status(500).json({
+        message: "Parse error",
+        raw: data,
+      });
+    }
+  });
 });
 // save preference
 const savePreference = async (selectedCategory) => {
