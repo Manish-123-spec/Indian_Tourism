@@ -1,0 +1,351 @@
+/* --- Hero Section --- */
+.hero-container {
+  position: relative;
+  height: 85vh;
+  overflow: hidden;
+}
+
+.hero-slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 85vh;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+  z-index: 0;
+}
+
+.hero-slide.active {
+  opacity: 1;
+  z-index: 1;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 50%;
+  width: 100%;
+  text-align: center;
+  color: white;
+  transform: translateY(-50%);
+  text-shadow: 2px 2px 6px rgba(0,0,0,0.7);
+  z-index: 2;
+}
+
+.hero-title {
+  font-size: 3rem;
+}
+
+.hero-subtitle {
+  font-size: 1.5rem;
+}
+
+@media(max-width:768px) {
+  .hero-title { font-size: 2rem; }
+  .hero-subtitle { font-size: 1rem; }
+}
+
+/* --- Place Cards --- */
+.place-card-container {
+  display: flex;
+  flex-wrap: nowrap;        /* Prevents wrapping to next line */
+  justify-content: flex-start;
+  gap: 20px;
+  padding: 40px 20px;
+  overflow-x: auto;         /* Enables horizontal scroll on small screens */
+  scroll-behavior: smooth;
+}
+
+.place-card {
+  min-width: 250px;         /* Ensures cards stay same width */
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.place-card img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.place-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+/* --- Place Detail Page --- */
+
+.place-detail {
+  max-width: 900px;
+  margin: auto;
+}
+
+.place-title {
+  text-align: center;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+/* Image container */
+.place-image-container {
+  width: 100%;
+  background: #f5f5f5;
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+/* Monument image */
+.place-image {
+  width: 100%;
+  max-height: 450px;
+  object-fit: contain; /* Shows full image without cropping */
+  border-radius: 10px;
+}
+
+/* Text sections */
+.place-section {
+  margin-top: 25px;
+}
+
+.place-section h4 {
+  margin-bottom: 10px;
+  color: #333;
+}
+/* Body and background */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #74ebe7 0%, #ACB6E5 100%);
+  min-height: 100vh;
+}
+
+/* Centered container for auth pages */
+.auth-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+/* Card box for login/signup */
+.auth-card {
+  width: 100%;
+  max-width: 400px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 40px 30px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+  text-align: center;
+}
+
+/* Headings and text */
+.auth-heading {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.auth-text {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 30px;
+}
+
+/* Form inputs */
+.auth-form .form-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.auth-form label {
+  font-weight: 500;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.auth-form .form-control {
+  width: 100%;
+  padding: 12px 15px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+.auth-form .form-control:focus {
+  border-color: #74ebd5;
+  outline: none;
+  box-shadow: 0 0 5px rgba(116, 235, 213, 0.5);
+}
+
+/* Buttons */
+.auth-btn {
+  width: 100%;
+  background: #74ebd5;
+  border: none;
+  color: #fff;
+  font-weight: 600;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: 0.3s;
+}
+
+.auth-btn:hover {
+  background: #5ac4b0;
+}
+
+/* Bottom link text */
+.auth-bottom {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #666;
+}
+
+.auth-bottom a {
+  color: #74ebd5;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.auth-bottom a:hover {
+  text-decoration: underline;
+}
+/* Navbar overall */
+/* Light Navbar overall */
+.custom-navbar-light {
+  width: 100%;
+  background-color: #f8f9fa; /* Light grey background */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* Subtle shadow */
+  position: sticky;
+  top: 0;
+  z-index: 999;
+}
+
+/* Container inside navbar */
+.nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+}
+
+/* Brand */
+.navbar-brand {
+  color: #343a40 !important; /* Dark text */
+  font-size: 1.8rem;
+  letter-spacing: 1px;
+  transition: 0.3s;
+}
+
+.navbar-brand:hover {
+  color: #ff7f50 !important; /* Coral hover */
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+}
+
+/* Nav links */
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 1.5rem;
+}
+
+.nav-links li a {
+  text-decoration: none;
+  color: #343a40; /* Dark text */
+  font-weight: 500;
+  transition: 0.3s;
+  position: relative;
+}
+
+.nav-links li a:hover {
+  color: #ff7f50; /* Hover color */
+}
+
+.nav-links li a::after {
+  content: '';
+  display: block;
+  height: 2px;
+  width: 0;
+  background: #ff7f50;
+  transition: width 0.3s;
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+}
+
+.nav-links li a:hover::after {
+  width: 100%;
+}
+
+/* Hamburger menu for mobile */
+.nav-toggle {
+  display: none;
+}
+
+.nav-toggle-label {
+  display: none;
+  cursor: pointer;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.nav-toggle-label span,
+.nav-toggle-label span::before,
+.nav-toggle-label span::after {
+  display: block;
+  background: #343a40; /* Dark lines */
+  height: 3px;
+  width: 25px;
+  border-radius: 2px;
+  position: relative;
+  transition: 0.3s;
+}
+
+.nav-toggle-label span::before,
+.nav-toggle-label span::after {
+  content: '';
+  position: absolute;
+  left: 0;
+}
+
+.nav-toggle-label span::before {
+  top: -8px;
+}
+
+.nav-toggle-label span::after {
+  top: 8px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .nav-links {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: #f8f9fa; /* Same light background */
+    flex-direction: column;
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.3s;
+  }
+
+  .nav-links li {
+    margin: 1rem 0;
+    text-align: center;
+  }
+
+  .nav-toggle:checked ~ .nav-links {
+    max-height: 300px;
+  }
+
+  .nav-toggle-label {
+    display: flex;
+  }
+}
