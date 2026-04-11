@@ -30,7 +30,7 @@ const categoryMap = {
 
 const category = categoryMap[categoryInput] || "Beach";
 
-// ================= FILTER DATA =================
+// ================= FILTER =================
 let filtered = df.filter(item => item.category === category);
 
 if (filtered.length === 0) {
@@ -38,15 +38,27 @@ if (filtered.length === 0) {
   process.exit(0);
 }
 
-// ================= SCORING (SMART FORMULA) =================
+// ================= SCORING ENGINE =================
 filtered = filtered.map(item => {
-  const tempDiff = Math.abs(item.avg_temp - temp);
-  const humidityDiff = Math.abs(item.avg_humidity - humidity);
+  // normalize differences
+  const tempDiff = Math.abs(item.avg_temp - temp) / 50;
+  const humidityDiff = Math.abs(item.avg_humidity - humidity) / 100;
 
-  // 🔥 Weighted scoring system
+  // category penalty
+  const categoryPenalty = item.category === category ? 0 : 1;
+
+  // weather boost (smart logic)
+  let weatherBoost = 0;
+
+  if (temp > 35 && item.category === "Beach") weatherBoost = -0.3;
+  if (temp < 15 && item.category === "Hill Station") weatherBoost = -0.3;
+
+  // FINAL SCORE
   const score =
-    (tempDiff * 0.6) +
-    (humidityDiff * 0.4);
+    (tempDiff * 0.5) +
+    (humidityDiff * 0.3) +
+    (categoryPenalty * 0.2) +
+    weatherBoost;
 
   return {
     city: item.city,
@@ -63,7 +75,7 @@ filtered = filtered.map(item => {
 // ================= SORT =================
 filtered.sort((a, b) => a.score - b.score);
 
-// ================= TOP 5 =================
+// ================= TOP RESULTS =================
 const topPlaces = filtered.slice(0, 5);
 
 // ================= OUTPUT =================
