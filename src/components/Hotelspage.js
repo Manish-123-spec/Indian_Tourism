@@ -13,7 +13,7 @@ const HotelsPage = () => {
     const fetchHotels = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/hotels?lat=${lat}&lng=${lng}`
+          `https://indian-tourism-1-go4d.onrender.com/hotels?lat=${lat}&lng=${lng}`
         );
         setData(res.data);
       } catch (err) {
