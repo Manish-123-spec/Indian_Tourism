@@ -122,30 +122,40 @@ const verifyToken = (req, res, next) => {
 /* RECOMMEND API */
 /////////////////////////////////////////////////////
 
+const { spawn } = require("child_process");
+
 app.post("/recommend", verifyToken, (req, res) => {
-  const { temp, humidity, category } = req.body;
+  try {
+    const { temp, humidity, category } = req.body;
 
-  const py = spawn("python", ["predict.py", temp, humidity, category]);
+    // run JS script using node
+    const py = spawn("node", ["predict.js", temp, humidity, category]);
 
-  let data = "";
+    let data = "";
 
-  py.stdout.on("data", (chunk) => {
-    data += chunk.toString();
-  });
+    py.stdout.on("data", (chunk) => {
+      data += chunk.toString();
+    });
 
-  py.stderr.on("data", (err) => {
-    console.error("Python error:", err.toString());
-  });
+    py.stderr.on("data", (err) => {
+      console.error("JS error:", err.toString());
+    });
 
-  py.on("close", () => {
-    try {
-      const lines = data.trim().split("\n");
-      const jsonOutput = JSON.parse(lines[lines.length - 1]);
-      res.json(jsonOutput);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to parse Python output" });
-    }
-  });
+    py.on("close", (code) => {
+      try {
+        const jsonOutput = JSON.parse(data.trim()); // direct parse
+        res.json(jsonOutput);
+      } catch (error) {
+        console.error("Parse error:", error.message);
+        res.status(500).json({
+          message: "Failed to parse JS output",
+          raw: data,
+        });
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 });
 // save preference
 const savePreference = async (selectedCategory) => {
