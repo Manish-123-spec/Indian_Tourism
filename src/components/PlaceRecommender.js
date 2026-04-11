@@ -49,7 +49,7 @@ const PlaceRecommender = () => {
   const handleSubmit = async () => {
     try {
       const res = await axios.post(
-        "http://localhost:5000/recommend",
+        "https://indian-tourism-1-go4d.onrender.com/recommend",
         {
           temp: parseInt(temp),
           humidity: parseInt(humidity),
